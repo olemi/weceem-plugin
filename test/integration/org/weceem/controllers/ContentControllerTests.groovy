@@ -17,28 +17,22 @@ import org.weceem.AbstractServletContextMockingTest
  *
  * These old tests BAD because they are not mocking the services, so they are testing the services and controller
  */
-import grails.test.mixin.TestMixin
-import grails.test.mixin.integration.IntegrationTestMixin
-
-@TestMixin(IntegrationTestMixin)
 class ContentControllerTests extends AbstractServletContextMockingTest {
     def template
     def nodeA
     def nodeB
-    def wcmContentRepositoryService
-    def wcmContentFingerprintService
-    def wcmSecurityService
-    def wcmRenderEngine
+    def grailsApplication
     def folder
     def defaultDoc
 
     WcmContentController mockedController() {
         def con = new WcmContentController()
 
-        con.wcmContentRepositoryService = wcmContentRepositoryService
-        con.wcmContentFingerprintService = wcmContentFingerprintService
-        con.wcmSecurityService = wcmSecurityService
-        con.wcmRenderEngine = wcmRenderEngine
+        def app = grailsApplication
+        
+        con.wcmContentRepositoryService = app.mainContext.wcmContentRepositoryService
+        con.wcmContentFingerprintService = app.mainContext.wcmContentFingerprintService
+        con.wcmSecurityService = app.mainContext.wcmSecurityService
         con.wcmRenderEngine.proxyHandler = [unwrapIfProxy: { o -> o}]
         
         return con
@@ -136,7 +130,7 @@ class ContentControllerTests extends AbstractServletContextMockingTest {
         con.show()
         
         println con.response.contentAsString
-        assert con.response.status.equals(403)
+        assertEquals 403, con.response.status
     
     }
     
@@ -150,7 +144,7 @@ class ContentControllerTests extends AbstractServletContextMockingTest {
         con.show()
         
         println con.response.contentAsString
-        assert con.response.status.equals(200)
+        assertEquals 200, con.response.status
     
     }
 
@@ -163,7 +157,7 @@ class ContentControllerTests extends AbstractServletContextMockingTest {
         con.params.uri = "/jcatalog/folder"
         con.show()
 
-        assert con.response.status.equals(200)
+        assertEquals 200, con.response.status
 
         println "resp type: "+con.response.contentType
         con.response.headerNames.each { n ->
@@ -172,14 +166,14 @@ class ContentControllerTests extends AbstractServletContextMockingTest {
         
         println con.response.contentAsString
 
-        assert con.response.contentAsString.contains('default doc')
+        assertTrue con.response.contentAsString.contains('default doc')
 
         con.params.uri = "/jcatalog/folder/"
         con.show()
-        assert con.response.status.equals(200)
+        assertEquals 200, con.response.status
 
         println con.response.contentAsString
-        assert con.response.contentAsString.contains('default doc')
+        assertTrue con.response.contentAsString.contains('default doc')
     }
     
     

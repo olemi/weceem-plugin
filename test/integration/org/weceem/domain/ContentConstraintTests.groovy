@@ -12,18 +12,13 @@ import org.weceem.html.*
 import org.weceem.wiki.*
 
 import org.weceem.AbstractServletContextMockingTest
-import grails.util.Holders
 
-import grails.test.mixin.TestMixin
-import grails.test.mixin.integration.IntegrationTestMixin
-
-@TestMixin(IntegrationTestMixin)
 class ContentConstraintTests extends AbstractWeceemIntegrationTest {
     void testAllContentPropertyConstraintsAreCorrect() {
-        Holders.grailsApplication.domainClasses.each { dca ->
+        grailsApplication.domainClasses.each { dca ->
             def con = dca.clazz.constraints.content
             if (con) {
-                assert WcmContent.MAX_CONTENT_SIZE.equals(con.maxSize)
+                assertEquals "${dca.clazz} maxSize is not set to MAX_CONTENT_SIZE", WcmContent.MAX_CONTENT_SIZE, con.maxSize
             }
         }
     }

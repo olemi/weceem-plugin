@@ -2,8 +2,6 @@ import org.weceem.AbstractWeceemIntegrationTest
 
 import org.weceem.content.*
 import org.weceem.html.*
-import grails.test.mixin.TestMixin
-import grails.test.mixin.integration.IntegrationTestMixin
 
 /**
  * ContentRepositoryTests class contains tests for tree operations from
@@ -11,8 +9,6 @@ import grails.test.mixin.integration.IntegrationTestMixin
  *
  * These old tests BAD because they are not mocking the services, so they are testing the services and controller
  */
-
-@TestMixin(IntegrationTestMixin)
 class SearchTests extends AbstractWeceemIntegrationTest {
     def statusA
     def statusB
@@ -82,13 +78,13 @@ class SearchTests extends AbstractWeceemIntegrationTest {
         
         def resultData = wcmContentRepositoryService.searchForContent('content', spaceA, null, [max:pageSize])
         
-        assert pageSize.equals(resultData.results.size())
-        assert resultData.results.every { it.space.id == spaceA.id }
+        assertEquals pageSize, resultData.results.size()
+        assertTrue resultData.results.every { it.space.id == spaceA.id }
 
         resultData = wcmContentRepositoryService.searchForContent('content', spaceB, null, [max:pageSize])
         
-        assert resultData.results.size().equals(10)
-        assert resultData.results.every { it.space.id == spaceB.id }
+        assertEquals 10, resultData.results.size()
+        assertTrue resultData.results.every { it.space.id == spaceB.id }
     }
     
 /* commented out because for now this doesn't work and we're deferring this until a later version
@@ -111,13 +107,13 @@ class SearchTests extends AbstractWeceemIntegrationTest {
         def pagesize = 10
         def resultData = wcmContentRepositoryService.searchForPublicContent('content', spaceA, null, [max:pagesize])
 
-        assert pagesize.equals(resultData.results.size())
-        assert resultData.results.every { n -> n.status.publicContent == true }
+        assertEquals pagesize, resultData.results.size()
+        assertTrue resultData.results.every { n -> n.status.publicContent == true }
 
         def resultData2 = wcmContentRepositoryService.searchForPublicContent('content', spaceA, null, [max:pagesize, offset:pagesize])
 
-        assert pagesize.equals(resultData2.results.size())
-        assert resultData2.results.every { r ->
+        assertEquals pagesize, resultData2.results.size()
+        assertTrue resultData2.results.every { r ->
             r.status.publicContent && !resultData.results.find { n -> n.id == r.id }
         }
     }
@@ -125,10 +121,9 @@ class SearchTests extends AbstractWeceemIntegrationTest {
     void testSearchForPublicContentExcludesUnpublishedContent() {
         def pageSize = 50
         def resultData = wcmContentRepositoryService.searchForPublicContent('content', spaceA, null, [max:pageSize])
-
-        int size = Math.round(pageSize / 2)
-        assert resultData.results.size().equals(size)
-        assert resultData.results.every { it.status.publicContent == true }
+        
+        assertEquals pageSize / 2, resultData.results.size()
+        assertTrue resultData.results.every { it.status.publicContent == true }
     }
 
 /* commented out as we can't get this implementation to work at all, Searchable/Compass issues

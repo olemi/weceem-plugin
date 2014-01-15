@@ -4,10 +4,7 @@ import org.weceem.AbstractWeceemIntegrationTest
 
 import org.weceem.content.*
 import org.weceem.html.WcmHTMLContent
-import grails.test.mixin.TestMixin
-import grails.test.mixin.integration.IntegrationTestMixin
 
-@TestMixin(IntegrationTestMixin)
 class WcmContentDependencyServiceTests extends AbstractWeceemIntegrationTest {
 
     def statusPublished
@@ -146,29 +143,29 @@ class WcmContentDependencyServiceTests extends AbstractWeceemIntegrationTest {
 
         dumpInfo()
 
-        assert (['parent-a/**'].equals(wcmContentDependencyService.getDependencyPathsOf(templateA)))
-        assert (['templateA'].equals(wcmContentDependencyService.getDependencyPathsOf(parentA)))
-        assert (['templateA'].equals(wcmContentDependencyService.getDependencyPathsOf(childA1)))
-        assert (['templateB'].equals(wcmContentDependencyService.getDependencyPathsOf(childA2)))
+        assertEquals (['parent-a/**'], wcmContentDependencyService.getDependencyPathsOf(templateA))
+        assertEquals (['templateA'], wcmContentDependencyService.getDependencyPathsOf(parentA))
+        assertEquals (['templateA'], wcmContentDependencyService.getDependencyPathsOf(childA1))
+        assertEquals (['templateB'], wcmContentDependencyService.getDependencyPathsOf(childA2))
 
         dumpInfo()
         
         def templDeps = wcmContentDependencyService.getContentDependentOn(templateA)
         println "TemplateA deps: ${templDeps*.absoluteURI} / ${templDeps*.id}"
         println "Expected TemplateA deps: ${[childA1, grandchildA1, parentA]*.absoluteURI} / ${[childA1, grandchildA1, parentA]*.id}"
-        assert ([childA1, grandchildA1, parentA]*.id.sort() == templDeps*.id.sort())
+        assertEquals ([childA1, grandchildA1, parentA]*.id.sort(), templDeps*.id.sort())
 
         def child1Deps = wcmContentDependencyService.getContentDependentOn(childA1)
         println "child1Deps deps: ${child1Deps*.absoluteURI} / ${child1Deps*.id}"
-        assert ([templateA, parentA, grandchildA1]*.id.sort() == child1Deps*.id.sort())
-        assert ([templateA, parentA, grandchildA1, childA1]*.id.sort() == wcmContentDependencyService.getContentDependentOn(childA2)*.id.sort())
-        assert ([]*.id.sort() == wcmContentDependencyService.getContentDependentOn(parentA)*.id.sort())
+        assertEquals ([templateA, parentA, grandchildA1]*.id.sort(), child1Deps*.id.sort())
+        assertEquals ([templateA, parentA, grandchildA1, childA1]*.id.sort(), wcmContentDependencyService.getContentDependentOn(childA2)*.id.sort())
+        assertEquals ([]*.id.sort(), wcmContentDependencyService.getContentDependentOn(parentA)*.id.sort())
 
-        assert ([parentA, childA1, grandchildA1]*.id.sort() == wcmContentDependencyService.getContentDependentOn(templateA)*.id.sort())
+        assertEquals ([parentA, childA1, grandchildA1]*.id.sort(), wcmContentDependencyService.getContentDependentOn(templateA)*.id.sort())
 
-        assert ([parentA, childA1, grandchildA1, templateA, childA2]*.id.sort() == wcmContentDependencyService.getContentDependentOn(templateB)*.id.sort())
+        assertEquals ([parentA, childA1, grandchildA1, templateA, childA2]*.id.sort(), wcmContentDependencyService.getContentDependentOn(templateB)*.id.sort())
 
-        assert 0 == wcmContentDependencyService.getContentDependentOn(parentA).size()
+        assertEquals 0, wcmContentDependencyService.getContentDependentOn(parentA).size()
     }
     
 
@@ -179,29 +176,29 @@ class WcmContentDependencyServiceTests extends AbstractWeceemIntegrationTest {
         def templDeps = wcmContentDependencyService.getDependenciesOf(templateA)
         println "TemplateA deps: ${templDeps*.absoluteURI}"
         // TemplateA indirectly depends on templateB because childA2 is dependent on changes to templateB
-        assert ([childA1, childA2, grandchildA1, templateB]*.id.sort() == templDeps*.id.sort())
+        assertEquals ([childA1, childA2, grandchildA1, templateB]*.id.sort(), templDeps*.id.sort())
         
-        assert ([templateA, childA2, grandchildA1, childA1, templateB]*.id.sort() == wcmContentDependencyService.getDependenciesOf(parentA)*.id.sort())
-        assert ([templateA, grandchildA1, childA2, templateB]*.id.sort() == wcmContentDependencyService.getDependenciesOf(childA1)*.id.sort())
-        assert ([templateB]*.id.sort() == wcmContentDependencyService.getDependenciesOf(childA2)*.id.sort())
+        assertEquals ([templateA, childA2, grandchildA1, childA1, templateB]*.id.sort(), wcmContentDependencyService.getDependenciesOf(parentA)*.id.sort())
+        assertEquals ([templateA, grandchildA1, childA2, templateB]*.id.sort(), wcmContentDependencyService.getDependenciesOf(childA1)*.id.sort())
+        assertEquals ([templateB]*.id.sort(), wcmContentDependencyService.getDependenciesOf(childA2)*.id.sort())
     }
 
     void testGetContentDependentOn() {
 
         dumpInfo()
 
-        assert ([parentA, childA1, grandchildA1]*.id.sort() == wcmContentDependencyService.getContentDependentOn(templateA)*.id.sort())
-        assert ([]*.id.sort() == wcmContentDependencyService.getContentDependentOn(parentA)*.id.sort())
-        assert ([templateA, parentA, grandchildA1]*.id.sort() == wcmContentDependencyService.getContentDependentOn(childA1)*.id.sort())
-        assert ([templateA, parentA, childA1, grandchildA1]*.id.sort() == wcmContentDependencyService.getContentDependentOn(childA2)*.id.sort())
+        assertEquals ([parentA, childA1, grandchildA1]*.id.sort(), wcmContentDependencyService.getContentDependentOn(templateA)*.id.sort())
+        assertEquals ([]*.id.sort(), wcmContentDependencyService.getContentDependentOn(parentA)*.id.sort())
+        assertEquals ([templateA, parentA, grandchildA1]*.id.sort(), wcmContentDependencyService.getContentDependentOn(childA1)*.id.sort())
+        assertEquals ([templateA, parentA, childA1, grandchildA1]*.id.sort(), wcmContentDependencyService.getContentDependentOn(childA2)*.id.sort())
     }
 
     void testDependencyInfoDoesNotClashAcrossSpacesForSameURI() {
-        assert ([htmlInSpaceB]*.id.sort() == wcmContentDependencyService.getContentDependentOn(templateInSpaceB)*.id.sort())
-        assert ([templateInSpaceB]*.id.sort() == wcmContentDependencyService.getDependenciesOf(htmlInSpaceB)*.id.sort())
+        assertEquals ([htmlInSpaceB]*.id.sort(), wcmContentDependencyService.getContentDependentOn(templateInSpaceB)*.id.sort())
+        assertEquals ([templateInSpaceB]*.id.sort(), wcmContentDependencyService.getDependenciesOf(htmlInSpaceB)*.id.sort())
 
-        assert ([parentA, childA1, grandchildA1]*.id.sort() == wcmContentDependencyService.getContentDependentOn(templateA)*.id.sort())
-        assert ([templateA, childA2, grandchildA1, childA1, templateB]*.id.sort() == wcmContentDependencyService.getDependenciesOf(parentA)*.id.sort())
+        assertEquals ([parentA, childA1, grandchildA1]*.id.sort(), wcmContentDependencyService.getContentDependentOn(templateA)*.id.sort())
+        assertEquals ([templateA, childA2, grandchildA1, childA1, templateB]*.id.sort(), wcmContentDependencyService.getDependenciesOf(parentA)*.id.sort())
     }
     
     void dumpInfo() {
