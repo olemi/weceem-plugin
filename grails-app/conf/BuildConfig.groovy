@@ -1,8 +1,7 @@
-grails.servlet.version = "3.0"
 grails.tomcat.jvmArgs = ["-Xmx1024m", "-XX:MaxPermSize=100m", '-verbose:class']
 grails.project.work.dir="target/work"
 
-grails.project.dependency.resolver = "maven" // or ivy
+
 grails.project.dependency.resolution = {
     inherits "global" // inherit Grails default dependencies
 
@@ -12,7 +11,7 @@ grails.project.dependency.resolution = {
 		grailsPlugins()
 		grailsHome()
 		grailsCentral()
-        mavenRepo "http://repo.grails.org/grails/core"
+        flatDir dirs:"lib" // need this for iText
         mavenCentral() // need this to resolve junit 3.8.1 (with grails 2.2.1+)
     }
 
@@ -29,7 +28,6 @@ grails.project.dependency.resolution = {
         compile 'com.lowagie:itext:2.1.3'
 
         compile 'xstream:xstream:1.2.1'
-        compile "org.compass-project:compass:2.2.1"
 
     //     test "org.seleniumhq.selenium:selenium-firefox-driver:$seleniumVersion"
     //     // test "org.seleniumhq.selenium:selenium-ie-driver:$seleniumVersion"
@@ -40,18 +38,9 @@ grails.project.dependency.resolution = {
     }
 
 	plugins {
-        // plugins for the build system only
-        build ":tomcat:7.0.42"
-        build (":release:3.0.1") {
+        build(":tomcat:$grailsVersion", ":release:2.2.1", ":hibernate:$grailsVersion") {
             export = false
         }
-        // plugins for the compile step
-        compile ":scaffolding:2.0.1"
-        compile ':cache:1.1.1'
-
-        // plugins needed at runtime but not for compilation
-        runtime ":hibernate:3.6.10.3" // or ":hibernate4:4.1.11.2"
-        runtime ":database-migration:1.3.8"
 
         compile ":bean-fields:1.0" // consider replacing with the fields plugin or even with the new Platform UI
         compile ":blueprint:1.0.2"
@@ -59,7 +48,7 @@ grails.project.dependency.resolution = {
         compile ":ckeditor:3.6.6.1.0"
         compile ":feeds:1.6"
 
-        compile ":platform-core:1.0.RC6"
+        compile ":platform-core:1.0.RC5"
 //        test ":geb:$gebVersion"
         test(":functional-test:2.0.RC2-SNAPSHOT") { 
             excludes "xerces, xml-apis"
@@ -70,7 +59,7 @@ grails.project.dependency.resolution = {
         compile ":jquery-ui:1.8.24"
         compile ":navigation:1.3.2"
         compile ":quartz:1.0-RC7"
-        compile ":searchable:0.6.6"
+        compile ":searchable:0.6.4" 
         compile ":taggable:1.0.1"
 
         // For serlvet filter ordering

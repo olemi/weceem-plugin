@@ -61,12 +61,7 @@ class UploadConfigTests extends grails.test.GrailsUnitTestCase {
         def basePath = new File('.', 'test-uploads-folder')
 
         def dummyConfig = new ConfigObject()
-
-        if (basePath.absolutePath.replace('\\', '/').startsWith('/')) {
-            dummyConfig.weceem.upload.dir = 'file:'+basePath.absolutePath
-        } else {
-            dummyConfig.weceem.upload.dir = 'file:/'+basePath.absolutePath.replace('\\', '/')
-        }
+        dummyConfig.weceem.upload.dir = 'file:'+basePath.absolutePath
         dummyConfig.grails.mime.file.extensions = false
 
         service.with {
@@ -88,11 +83,7 @@ class UploadConfigTests extends grails.test.GrailsUnitTestCase {
         def basePath = new File('.', 'test-uploads-folder')
 
         def dummyConfig = new ConfigObject()
-        if (basePath.absolutePath.replace('\\', '/').startsWith('/')) {
-            dummyConfig.weceem.upload.dir = 'file:'+basePath.absolutePath
-        } else {
-            dummyConfig.weceem.upload.dir = 'file:/'+basePath.absolutePath.replace('\\', '/')
-        }
+        dummyConfig.weceem.upload.dir = "file:${basePath.absolutePath}"
         dummyConfig.grails.mime.file.extensions = false
         service.with {
             grailsApplication = [

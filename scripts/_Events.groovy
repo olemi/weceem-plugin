@@ -2,7 +2,7 @@
 /**
  * Include the default space template ZIPs in the WAR
  */
-eventCreateWarStart = { name, stagingDir ->
+eventCreateWarStart = { name, stagingPath ->
     def resPath = "${stagingDir}/WEB-INF/classes/org/weceem/resources"
     ant.mkdir(dir:resPath)
     ant.copy(todir:resPath) {

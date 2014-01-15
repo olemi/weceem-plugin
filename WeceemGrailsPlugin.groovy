@@ -83,7 +83,7 @@ class WeceemGrailsPlugin {
             }
         }
         //configure defaults for searchable plugin here
-        if (!application.config.searchable) {
+        if (!application.config.searchable.compassConnection) {
             def searchableConfig = new ConfigObject()
             def userHome = System.getProperty("user.home")
             searchableConfig.searchable.compassConnection = new File("${userHome}/.weceem/searchable-index").absolutePath
@@ -97,11 +97,6 @@ class WeceemGrailsPlugin {
             searchableConfig.searchable.releaseLocksOnStartup = true
             application.config.merge(searchableConfig)
 
-        } else if (!application.config.searchable.compassConnection) {
-            def searchableConfig = new ConfigObject()
-            def userHome = System.getProperty("user.home")
-            searchableConfig.searchable.compassConnection = new File("${userHome}/.weceem/searchable-index").absolutePath
-            application.config.merge(searchableConfig)
         }
     }
 
